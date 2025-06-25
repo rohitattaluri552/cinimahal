@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Movie } from "../models/movie.model";
 import MovieCard from "./movie-card";
 import MovieDetailView from "./movie-detail-view";
+import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 
 type MoviesGridProps = {
   movies: Movie[];
@@ -16,6 +18,7 @@ export default function MoviesGrid({
 }: MoviesGridProps) {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
+  const router = useRouter();
 
   const handleAddToCart = (movie: Movie) => {
     console.log("Adding movie to cart:", movie);
@@ -63,9 +66,17 @@ export default function MoviesGrid({
     <>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            {title}
-          </h2>
+          <div className="flex flex-row justify-between items-center mb-8 ">
+            <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
+
+            <button
+              onClick={() => router.push("/add-movie")}
+              className="flex flex-row space-x-1.5 items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              <Plus className="font-semibold text-white text-lg" />
+              <span>Add Movie</span>
+            </button>
+          </div>
 
           {movies.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16">
