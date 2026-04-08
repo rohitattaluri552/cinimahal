@@ -54,14 +54,9 @@ export default function MovieDetailView({
           </div>
         )}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <StarOutlineIcon
-            key={`empty-${i}`}
-            className="h-5 w-5 text-gray-300"
-          />
+          <StarOutlineIcon key={`empty-${i}`} className="h-5 w-5 text-gray-300" />
         ))}
-        <span className="text-lg text-gray-700 ml-2 font-medium">
-          {rating.toFixed(1)}/10
-        </span>
+        <span className="text-lg text-gray-700 ml-2 font-medium">{rating.toFixed(1)}/10</span>
       </div>
     );
   };
@@ -99,7 +94,7 @@ export default function MovieDetailView({
             isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-4"
           }`}
         >
-          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Close Button */}
             <button
               onClick={onClose}
@@ -109,7 +104,7 @@ export default function MovieDetailView({
               <X className="h-6 w-6" />
             </button>
 
-            <div className="flex flex-col lg:flex-row">
+            <div className="flex flex-col lg:flex-row overflow-hidden">
               {/* Poster Section */}
               <div className="lg:w-2/5 relative">
                 <div className="aspect-[3/4] lg:h-[600px] relative overflow-hidden bg-gray-100">
@@ -132,7 +127,7 @@ export default function MovieDetailView({
               </div>
 
               {/* Content Section */}
-              <div className="lg:w-3/5 p-6 lg:p-8 overflow-y-auto">
+              <div className="lg:w-3/5 p-6 lg:p-8 overflow-y-auto max-h-[90vh]">
                 <div className="space-y-6">
                   {/* Title and Year */}
                   <div>
@@ -146,9 +141,7 @@ export default function MovieDetailView({
                   </div>
 
                   {/* Rating */}
-                  <div className="flex items-center gap-4">
-                    {renderStars(movie.rating)}
-                  </div>
+                  <div className="flex items-center gap-4">{renderStars(movie.rating)}</div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
@@ -169,29 +162,21 @@ export default function MovieDetailView({
 
                   {/* Description */}
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                      Synopsis
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed text-base">
-                      {movie.description}
-                    </p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">Synopsis</h3>
+                    <p className="text-gray-700 leading-relaxed text-base">{movie.description}</p>
                   </div>
 
                   {/* Movie Details Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Director */}
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                        Director
-                      </h4>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Director</h4>
                       <p className="text-gray-700">{movie.director}</p>
                     </div>
 
                     {/* Cast */}
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                        Cast
-                      </h4>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Cast</h4>
                       <div className="space-y-1">
                         {movie.cast.map((actor, index) => (
                           <p key={index} className="text-gray-700">
@@ -203,9 +188,7 @@ export default function MovieDetailView({
 
                     {/* Producers */}
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                        Producers
-                      </h4>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Producers</h4>
                       <div className="space-y-1">
                         {movie.producers.map((producer, index) => (
                           <p key={index} className="text-gray-700">
@@ -217,9 +200,7 @@ export default function MovieDetailView({
 
                     {/* Music */}
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                        Music
-                      </h4>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Music</h4>
                       <div className="space-y-1">
                         {movie.musicians.map((musician, index) => (
                           <p key={index} className="text-gray-700">
@@ -234,21 +215,15 @@ export default function MovieDetailView({
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                       <div>
-                        <span className="font-semibold text-gray-800">
-                          Release Year:
-                        </span>
+                        <span className="font-semibold text-gray-800">Release Year:</span>
                         <p className="text-gray-600">{movie.year}</p>
                       </div>
                       <div>
-                        <span className="font-semibold text-gray-800">
-                          Genre:
-                        </span>
+                        <span className="font-semibold text-gray-800">Genre:</span>
                         <p className="text-gray-600">{movie.genre}</p>
                       </div>
                       <div>
-                        <span className="font-semibold text-gray-800">
-                          Duration:
-                        </span>
+                        <span className="font-semibold text-gray-800">Duration:</span>
                         <p className="text-gray-600">{movie.duration}</p>
                       </div>
                     </div>
