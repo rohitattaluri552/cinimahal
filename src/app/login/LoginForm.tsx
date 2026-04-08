@@ -2,10 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { LoginFormData } from "./login-types";
+import AppLoader from "../components/app-loader";
 
 export function LoginForm() {
   const router = useRouter();
+  const [showLoader, setShowLoader] = useState(false);
   const {
     register,
     handleSubmit,
@@ -18,14 +21,19 @@ export function LoginForm() {
       JSON.stringify({
         email: data.email,
         isLoggedIn: true,
-      })
+      }),
     );
 
+    setShowLoader(true);
+
     setTimeout(() => {
-      // Navigate to dashboard
       router.replace("/dashboard");
-    }, 1200);
+    }, 1500);
   };
+
+  if (showLoader) {
+    return <AppLoader message="Loading your movies..." fullScreen={false} />;
+  }
 
   return (
     <form
@@ -40,10 +48,7 @@ export function LoginForm() {
 
       {/* Email */}
       <div className="space-y-2">
-        <label
-          htmlFor="email"
-          className="block text-sm font-semibold text-gray-700"
-        >
+        <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
           Email Address
         </label>
         <input
@@ -73,10 +78,7 @@ export function LoginForm() {
           })}
         />
         {errors.email && (
-          <p
-            role="alert"
-            className="text-red-500 text-sm font-medium flex items-center gap-1"
-          >
+          <p role="alert" className="text-red-500 text-sm font-medium flex items-center gap-1">
             {errors.email.message}
           </p>
         )}
@@ -84,10 +86,7 @@ export function LoginForm() {
 
       {/* Password */}
       <div className="space-y-2">
-        <label
-          htmlFor="password"
-          className="block text-sm font-semibold text-gray-700"
-        >
+        <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
           Password
         </label>
         <input
@@ -114,10 +113,7 @@ export function LoginForm() {
           })}
         />
         {errors.password && (
-          <p
-            role="alert"
-            className="text-red-500 text-sm font-medium flex items-center gap-1"
-          >
+          <p role="alert" className="text-red-500 text-sm font-medium flex items-center gap-1">
             {errors.password.message}
           </p>
         )}
@@ -140,11 +136,7 @@ export function LoginForm() {
       >
         {isSubmitting ? (
           <span className="flex items-center justify-center gap-2">
-            <svg
-              className="animate-spin h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
+            <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
