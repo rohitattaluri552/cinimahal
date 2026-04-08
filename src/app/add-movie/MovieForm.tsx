@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, Upload, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
+import { Movie } from "../models/movie.model";
+import AppLoader from "../components/app-loader";
 
 interface FormData {
   title: string;
@@ -22,10 +24,29 @@ interface FormErrors {
   image?: string;
 }
 
+const GENRES = [
+  "Action",
+  "Adventure",
+  "Animation",
+  "Comedy",
+  "Crime",
+  "Documentary",
+  "Drama",
+  "Fantasy",
+  "Horror",
+  "Mystery",
+  "Romance",
+  "Sci-Fi",
+  "Thriller",
+  "War",
+  "Western",
+];
+
 export default function MovieForm() {
   const router = useRouter();
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -51,7 +72,9 @@ export default function MovieForm() {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -96,18 +119,41 @@ export default function MovieForm() {
     return `${hours}h ${remainingMinutes}m`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
-      const dataToLog = {
-        ...formData,
+      setIsSubmitting(true);
+
+      const newMovie: Movie = {
+        id: Date.now().toString(),
+        title: formData.title,
+        description: formData.description,
+        rating: parseFloat(formData.rating),
+        posterUrl: thumbnail!,
+        genre: formData.genre,
+        year: new Date().getFullYear(),
         duration: formatDuration(formData.duration),
-        imageUrl: thumbnail,
+        director: "",
+        cast: [],
+        producers: [],
+        musicians: [],
       };
-      console.log("Form Data:", dataToLog);
+
+      const existingMovies = localStorage.getItem("cinimahal_movies");
+      const movies: Movie[] = existingMovies ? JSON.parse(existingMovies) : [];
+      movies.unshift(newMovie);
+      localStorage.setItem("cinimahal_movies", JSON.stringify(movies));
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     }
   };
+
+  if (isSubmitting) {
+    return <AppLoader message="Adding movie..." fullScreen={true} />;
+  }
   return (
     <>
       <div className="p-6 bg-gray-50 min-h-screen">
@@ -176,19 +222,29 @@ export default function MovieForm() {
               <label htmlFor="genre" className="block text-sm font-medium text-gray-700 mb-2">
                 Movie Genre
               </label>
-              <input
-                type="text"
-                id="genre"
-                name="genre"
-                value={formData.genre}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
-                  errors.genre
-                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                    : "border-gray-300"
-                }`}
-                placeholder="Enter movie genre"
-              />
+              <div className="relative">
+                <select
+                  id="genre"
+                  name="genre"
+                  value={formData.genre}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-white appearance-none cursor-pointer pr-10 ${
+                    errors.genre
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-300 hover:border-gray-400"
+                  } ${!formData.genre ? "text-gray-500" : "text-gray-900"}`}
+                >
+                  <option value="" disabled>
+                    Select a genre
+                  </option>
+                  {GENRES.map((genre) => (
+                    <option key={genre} value={genre}>
+                      {genre}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
+              </div>
               {errors.genre && <p className="mt-1 text-sm text-red-600">{errors.genre}</p>}
             </div>
             {/* Movie rating */}
